@@ -1,7 +1,7 @@
 package main
 
 import (
-	"V2bProxy/common/sysproxy"
+	"UniProxy/common/sysproxy"
 )
 
 func main() {

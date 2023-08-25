@@ -1,9 +1,9 @@
 package handle
 
 import (
-	"V2bProxy/common/encrypt"
-	"V2bProxy/proxy"
-	"V2bProxy/v2b"
+	"UniProxy/common/encrypt"
+	"UniProxy/proxy"
+	"UniProxy/v2b"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"os"

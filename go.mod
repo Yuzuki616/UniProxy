@@ -1,4 +1,4 @@
-module V2bProxy
+module UniProxy
 
 go 1.20
 

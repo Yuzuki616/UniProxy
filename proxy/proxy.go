@@ -1,8 +1,8 @@
 package proxy
 
 import (
-	"V2bProxy/common/sysproxy"
-	"V2bProxy/v2b"
+	"UniProxy/common/sysproxy"
+	"UniProxy/v2b"
 	box "github.com/sagernet/sing-box"
 )
 

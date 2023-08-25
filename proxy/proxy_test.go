@@ -1,7 +1,7 @@
 package proxy
 
 import (
-	"V2bProxy/v2b"
+	"UniProxy/v2b"
 	"testing"
 )
 

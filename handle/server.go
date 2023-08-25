@@ -1,7 +1,7 @@
 package handle
 
 import (
-	"V2bProxy/v2b"
+	"UniProxy/v2b"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"

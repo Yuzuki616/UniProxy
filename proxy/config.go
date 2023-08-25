@@ -1,7 +1,7 @@
 package proxy
 
 import (
-	"V2bProxy/v2b"
+	"UniProxy/v2b"
 	"encoding/base64"
 	"errors"
 	C "github.com/sagernet/sing-box/constant"

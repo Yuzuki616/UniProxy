@@ -1,8 +1,8 @@
 package router
 
 import (
-	"V2bProxy/handle"
-	"V2bProxy/middleware"
+	"UniProxy/handle"
+	"UniProxy/middleware"
 	"fmt"
 	"github.com/gin-gonic/gin"
 )
