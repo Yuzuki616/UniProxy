@@ -1,14 +1,17 @@
 package proxy
 
 import (
+	"V2bProxy/common/file"
+	"V2bProxy/geo"
 	"V2bProxy/v2b"
 	"encoding/base64"
 	"errors"
+	"fmt"
 	C "github.com/sagernet/sing-box/constant"
 	"github.com/sagernet/sing-box/option"
-	log "github.com/sirupsen/logrus"
 	"net/netip"
 	"net/url"
+	"os"
 	"path"
 	"strconv"
 )
@@ -110,7 +113,6 @@ func GetSingBoxConfig(uuid string, server *v2b.ServerInfo) (option.Options, erro
 					Insecure:   server.TlsSettings.AllowInsecure != "0",
 				}
 			case 2:
-				log.Error(server.TlsSettings.PublicKey)
 				out.VLESSOptions.TLS = &option.OutboundTLSOptions{
 					Enabled:    true,
 					ServerName: server.TlsSettings.RealityDest,
@@ -189,6 +191,10 @@ func GetSingBoxConfig(uuid string, server *v2b.ServerInfo) (option.Options, erro
 	default:
 		return option.Options{}, errors.New("server type is unknown")
 	}
+	r, err := getRules(GlobalMode)
+	if err != nil {
+		return option.Options{}, fmt.Errorf("get rules error: %s", err)
+	}
 	return option.Options{
 		Log: &option.LogOptions{
 			Output: path.Join(DataPath, "proxy.log"),
@@ -203,23 +209,26 @@ func GetSingBoxConfig(uuid string, server *v2b.ServerInfo) (option.Options, erro
 				Type: "direct",
 			},
 		},
-		Route: getRules(GlobalMode),
+		Route: r,
 	}, nil
 }
 
-func getRules(global bool) *option.RouteOptions {
+func getRules(global bool) (*option.RouteOptions, error) {
 	var r option.RouteOptions
 	if !global {
+		err := checkRes(DataPath)
+		if err != nil {
+			return nil, fmt.Errorf("check res err: %s", err)
+		}
 		r = option.RouteOptions{
 			GeoIP: &option.GeoIPOptions{
-				Path:           path.Join(DataPath, "geoip.dat"),
-				DownloadDetour: "p",
+				DownloadURL: ResUrl + "/geoip.db",
+				Path:        path.Join(DataPath, "geoip.dat"),
 			},
 			Geosite: &option.GeositeOptions{
-				Path:           path.Join(DataPath, "geosite.dat"),
-				DownloadDetour: "p",
+				DownloadURL: ResUrl + "/geosite.db",
+				Path:        path.Join(DataPath, "geosite.dat"),
 			},
-			AutoDetectInterface: true,
 		}
 		r.Rules = []option.Rule{
 			{
@@ -235,11 +244,37 @@ func getRules(global bool) *option.RouteOptions {
 				},
 			},
 		}
-		return &r
+		return &r, nil
 	} else {
 		r = option.RouteOptions{
 			AutoDetectInterface: true,
 		}
 	}
-	return &r
+	return &r, nil
+}
+
+func checkRes(p string) error {
+	if !file.IsExist(path.Join(p, "geoip.dat")) {
+		f, err := os.OpenFile(path.Join(p, "geoip.dat"), os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0755)
+		if err != nil {
+			return err
+		}
+		defer f.Close()
+		_, err = f.Write(geo.Ip)
+		if err != nil {
+			return err
+		}
+	}
+	if !file.IsExist(path.Join(p, "geosite.dat")) {
+		f, err := os.OpenFile(path.Join(p, "geosite.dat"), os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0755)
+		if err != nil {
+			return err
+		}
+		defer f.Close()
+		_, err = f.Write(geo.Site)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

@@ -1,6 +1,7 @@
 package router
 
 import (
+	"V2bProxy/geo"
 	"V2bProxy/handle"
 	"V2bProxy/middleware"
 	"fmt"
@@ -26,6 +27,14 @@ func loadRoute() {
 	engine.GET("stopUniProxy", handle.StopUniProxy)
 	engine.GET("setSystemProxy", handle.SetSystemProxy)
 	engine.GET("clearSystemProxy", handle.ClearSystemProxy)
+	engine.GET("geosite.db", func(c *gin.Context) {
+		c.Header("content-disposition", "attachment; filename=\"geosite.db\"")
+		c.Data(200, "application/octet-stream", geo.Site)
+	})
+	engine.GET("geoip.db", func(c *gin.Context) {
+		c.Header("content-disposition", "attachment; filename=\"geoip.db\"")
+		c.Data(200, "application/octet-stream", geo.Ip)
+	})
 }
 
 func Start(host string, port int) error {
