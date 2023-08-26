@@ -49,7 +49,7 @@ type ServerInfo struct {
 	} `json:"networkSettings"`
 	CreatedAt     int         `json:"created_at"`
 	AllowInsecure int         `json:"insecure"`
-	LastCheckAt   string      `json:"last_check_at"`
+	LastCheckAt   interface{} `json:"last_check_at"`
 	Tags          interface{} `json:"tags"`
 	ServerName    string      `json:"server_name"`
 	ServerKey     string      `json:"server_key"`
