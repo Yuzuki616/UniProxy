@@ -1,9 +1,9 @@
 package proxy
 
 import (
-	"V2bProxy/common/file"
-	"V2bProxy/geo"
-	"V2bProxy/v2b"
+	"UniProxy/common/file"
+	"UniProxy/geo"
+	"UniProxy/v2b"
 	"encoding/base64"
 	"errors"
 	"fmt"

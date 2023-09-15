@@ -1,8 +1,8 @@
 package main
 
 import (
-	"V2bProxy/proxy"
-	"V2bProxy/router"
+	"UniProxy/proxy"
+	"UniProxy/router"
 	"flag"
 	"log"
 	"strconv"
