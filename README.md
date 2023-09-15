@@ -9,7 +9,7 @@ GOOS=windows bash build.sh
 GOOS=darwin bash build.sh
 ```
 ## 使用
-构建后替换潮汐客户端 `resource/lib/` 路径下同名二进制文件。
+构建后替换潮汐客户端 `resources/libs/` 路径下同名二进制文件。
 
 ## Thanks
 [sing-box](https://github.com/SagerNet/sing-box)

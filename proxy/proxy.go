@@ -13,6 +13,7 @@ var (
 	TunMode     bool
 	InPort      int
 	DataPath    string
+	ResUrl      string
 )
 
 var client *box.Box
