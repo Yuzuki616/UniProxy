@@ -8,6 +8,6 @@ wget https://github.com/SagerNet/sing-geoip/releases/latest/download/geoip.db -O
 
 uni="uniproxy"
 cd cmd/$uni || exit
-go build -o ../../uniproxy$suf -ldflags '-s -w' -gcflags="all=-trimpath=${PWD}" -asmflags="all=-trimpath=${PWD}" -tags "with_quic with_gvisor"
+go build -o ../../uniproxy$suf -ldflags '-s -w' -gcflags="all=-trimpath=${PWD}" -asmflags="all=-trimpath=${PWD}" -tags "with_quic with_gvisor with_grpc with_utls"
 cd ../reset || exit
 go build -o ../../reset$suf -ldflags '-s -w' -gcflags="all=-trimpath=${PWD}" -asmflags="all=-trimpath=${PWD}"
