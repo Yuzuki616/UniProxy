@@ -24,7 +24,7 @@ func StartUniProxy(c *gin.Context) {
 	proxy.GlobalMode = p.GlobalMode
 	err = proxy.StartProxy(p.Tag, p.Uuid, servers[p.Tag])
 	if err != nil {
-		log.Error("start proxy error: ", err)
+		log.WithField("err", err).Error("start proxy failed")
 		c.JSON(400, Rsp{
 			Success: false,
 			Message: err.Error(),

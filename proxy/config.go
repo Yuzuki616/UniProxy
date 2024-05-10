@@ -21,22 +21,22 @@ func GetSingBoxConfig(uuid string, server *v2b.ServerInfo) (option.Options, erro
 	if TunMode {
 		in.Type = "tun"
 		in.TunOptions = option.TunInboundOptions{
-			Inet4Address: option.Listable[option.ListenPrefix]{
-				option.ListenPrefix(netip.MustParsePrefix("172.19.0.1/30")),
+			Inet4Address: option.Listable[netip.Prefix]{
+				netip.MustParsePrefix("172.19.0.1/30"),
 			},
-			Inet6Address: option.Listable[option.ListenPrefix]{
-				option.ListenPrefix(netip.MustParsePrefix("fdfe:dcba:9876::1/126")),
+			Inet6Address: option.Listable[netip.Prefix]{
+				netip.MustParsePrefix("fdfe:dcba:9876::1/126"),
 			},
 			MTU:         9000,
 			AutoRoute:   true,
 			StrictRoute: true,
-			Inet4RouteAddress: option.Listable[option.ListenPrefix]{
-				option.ListenPrefix(netip.MustParsePrefix("0.0.0.0/1")),
-				option.ListenPrefix(netip.MustParsePrefix("128.0.0.0/1")),
+			Inet4RouteAddress: option.Listable[netip.Prefix]{
+				netip.MustParsePrefix("0.0.0.0/1"),
+				netip.MustParsePrefix("128.0.0.0/1"),
 			},
-			Inet6RouteAddress: option.Listable[option.ListenPrefix]{
-				option.ListenPrefix(netip.MustParsePrefix("::/1")),
-				option.ListenPrefix(netip.MustParsePrefix("8000::/1")),
+			Inet6RouteAddress: option.Listable[netip.Prefix]{
+				netip.MustParsePrefix("::/1"),
+				netip.MustParsePrefix("8000::/1"),
 			},
 			Stack: "gvisor",
 		}

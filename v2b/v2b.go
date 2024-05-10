@@ -1,23 +1,30 @@
 package v2b
 
 import (
+	"UniProxy/common/balance"
 	"encoding/json"
 	"errors"
+	"github.com/avast/retry-go/v4"
 	"github.com/go-resty/resty/v2"
 	"time"
 )
 
 var (
-	client *resty.Client
+	clients *balance.List[*resty.Client]
+	etag    string
 )
 
-func Init(url, auth string) {
-	client = resty.New().
-		SetTimeout(time.Second*40).
-		SetQueryParam("auth_data", auth).
-		SetBaseURL(url).
-		SetRetryCount(3).
-		SetRetryWaitTime(3 * time.Second)
+func Init(b string, url []string, auth string) {
+	cs := make([]*resty.Client, len(url))
+	for i, u := range url {
+		cs[i] = resty.New().
+			SetTimeout(time.Second*40).
+			SetQueryParam("auth_data", auth).
+			SetBaseURL(u).
+			SetRetryCount(3).
+			SetRetryWaitTime(3 * time.Second)
+	}
+	clients = balance.New[*resty.Client](b, cs)
 }
 
 type ServerFetchRsp struct {
@@ -51,25 +58,38 @@ type ServerInfo struct {
 	AllowInsecure int         `json:"insecure"`
 	LastCheckAt   interface{} `json:"last_check_at"`
 	Tags          interface{} `json:"tags"`
+	UpMbps        int         `json:"up_mbps"`
 	ServerName    string      `json:"server_name"`
 	ServerKey     string      `json:"server_key"`
-	UpMbps        int         `json:"up_mbps"`
 	DownMbps      int         `json:"down_mbps"`
 }
 
 func GetServers() ([]ServerInfo, error) {
-	r, err := client.R().
-		Get("api/v1/user/server/fetch")
+	var r *resty.Response
+	err := retry.Do(func() error {
+		c := clients.Next()
+		rsp, err := c.R().
+			SetHeader("If-None-Match", etag).
+			Get("api/v1/user/server/fetch")
+		if err != nil {
+			return err
+		}
+		if rsp.StatusCode() == 304 {
+			return nil
+		}
+		etag = rsp.Header().Get("ETag")
+		if rsp.StatusCode() != 200 {
+			return nil
+		}
+		r = rsp
+		return nil
+	}, retry.Attempts(3))
 	if err != nil {
 		return nil, err
 	}
 	if r.StatusCode() == 304 {
 		return nil, nil
 	}
-	if r.StatusCode() != 200 {
-		return nil, errors.New(r.String())
-	}
-	client.SetHeader("If-None-Match", r.Header().Get("ETag"))
 	rsp := &ServerFetchRsp{}
 	err = json.Unmarshal(r.Body(), rsp)
 	if err != nil {

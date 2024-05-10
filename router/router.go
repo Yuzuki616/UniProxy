@@ -35,6 +35,7 @@ func loadRoute() {
 		c.Header("content-disposition", "attachment; filename=\"geoip.db\"")
 		c.Data(200, "application/octet-stream", geo.Ip)
 	})
+	engine.NoRoute(handle.ReverseProxy)
 }
 
 func Start(host string, port int) error {

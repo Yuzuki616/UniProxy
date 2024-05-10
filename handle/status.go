@@ -1,7 +1,9 @@
 package handle
 
 import (
+	"UniProxy/common/balance"
 	"UniProxy/common/encrypt"
+	"UniProxy/conf"
 	"UniProxy/proxy"
 	"UniProxy/v2b"
 	"github.com/gin-gonic/gin"
@@ -38,7 +40,11 @@ func InitParams(c *gin.Context) {
 		return
 	}
 	log.SetOutput(f)
-	v2b.Init(p.Url, p.Token)
+	if len(conf.C.Api.Baseurl) == 0 {
+		conf.C.Api.Baseurl = []string{p.Url}
+	}
+	urlBalance = balance.New[string](conf.C.Api.Balance, conf.C.Api.Baseurl)
+	v2b.Init(conf.C.Api.Balance, conf.C.Api.Baseurl, p.Token)
 	proxy.InPort = p.MixedPort
 	proxy.DataPath = p.UserPath
 	inited = true
