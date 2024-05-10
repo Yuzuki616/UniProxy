@@ -3,7 +3,7 @@ package balance
 import "math/rand"
 
 type List[T any] struct {
-	balance  string // round otr random
+	balance  string // round or random
 	index    int
 	elements []T
 }
