@@ -2,6 +2,7 @@ package handle
 
 import (
 	"UniProxy/common/balance"
+	"UniProxy/conf"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"io"
@@ -14,6 +15,7 @@ import (
 var urlBalance *balance.List[string]
 
 func ReverseProxy(c *gin.Context) {
+	urlBalance = balance.New[string](conf.C.Api.Balance, conf.C.Api.Baseurl)
 	u := urlBalance.Next()
 	target, err := url.Parse(u)
 	if err != nil {
@@ -33,4 +35,5 @@ func ReverseProxy(c *gin.Context) {
 			req.Body = io.NopCloser(r)
 		}
 	}
+	proxy.ServeHTTP(c.Writer, c.Request)
 }

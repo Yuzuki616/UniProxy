@@ -1,6 +1,7 @@
 package router
 
 import (
+	"UniProxy/conf"
 	"UniProxy/geo"
 	"UniProxy/handle"
 	"UniProxy/middleware"
@@ -35,7 +36,9 @@ func loadRoute() {
 		c.Header("content-disposition", "attachment; filename=\"geoip.db\"")
 		c.Data(200, "application/octet-stream", geo.Ip)
 	})
-	engine.NoRoute(handle.ReverseProxy)
+	if len(conf.C.Api.Baseurl) != 0 {
+		engine.NoRoute(handle.ReverseProxy)
+	}
 }
 
 func Start(host string, port int) error {
