@@ -15,7 +15,12 @@ import (
 var urlBalance *balance.List[string]
 
 func ReverseProxy(c *gin.Context) {
-	urlBalance = balance.New[string](conf.C.Api.Balance, conf.C.Api.Baseurl)
+	if urlBalance == nil {
+		urlBalance = balance.New[string](conf.C.Api.Balance, conf.C.Api.Baseurl)
+	}
+	if len(conf.C.Api.Balance) == 0 {
+		return
+	}
 	u := urlBalance.Next()
 	target, err := url.Parse(u)
 	if err != nil {

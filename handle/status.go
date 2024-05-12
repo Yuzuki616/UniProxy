@@ -2,7 +2,6 @@ package handle
 
 import (
 	"UniProxy/common/balance"
-	"UniProxy/common/encrypt"
 	"UniProxy/conf"
 	"UniProxy/proxy"
 	"UniProxy/v2b"
@@ -30,10 +29,6 @@ func InitParams(c *gin.Context) {
 		c.JSON(400, &Rsp{Success: false, Message: err.Error()})
 		return
 	}
-	if encrypt.Sha([]byte(encrypt.Sha([]byte(p.Url))+"1145141919")) != p.License {
-		c.JSON(400, &Rsp{Success: false})
-		return
-	}
 	f, err := os.OpenFile(path.Join(p.UserPath, "uniproxy.log"), os.O_TRUNC|os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
 		c.JSON(400, &Rsp{Success: false, Message: err.Error()})
@@ -47,6 +42,7 @@ func InitParams(c *gin.Context) {
 	v2b.Init(conf.C.Api.Balance, conf.C.Api.Baseurl, p.Token)
 	proxy.InPort = p.MixedPort
 	proxy.DataPath = p.UserPath
+	servers = make(map[string]*v2b.ServerInfo)
 	inited = true
 	c.JSON(200, &Rsp{Success: true})
 }

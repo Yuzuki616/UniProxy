@@ -3,6 +3,7 @@ package proxy
 import (
 	"UniProxy/common/sysproxy"
 	"UniProxy/v2b"
+	"context"
 	box "github.com/sagernet/sing-box"
 )
 
@@ -27,7 +28,10 @@ func StartProxy(tag string, uuid string, server *v2b.ServerInfo) error {
 	if err != nil {
 		return err
 	}
-	client, err = box.New(box.Options{Options: c})
+	client, err = box.New(box.Options{
+		Context: context.Background(),
+		Options: c,
+	})
 	if err != nil {
 		return err
 	}
