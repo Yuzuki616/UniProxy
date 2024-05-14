@@ -20,7 +20,7 @@ var (
 var client *box.Box
 
 func StartProxy(tag string, uuid string, server *v2b.ServerInfo) error {
-	if !Running {
+	if Running {
 		StopProxy()
 	}
 	SystemProxy = true
